@@ -1,0 +1,1 @@
+select count(*) from edge as edge1, edge as edge2, edge as edge3, node as node1, node as node2, node as node3 where edge1.to_id = edge2.from_id and edge2.to_id = edge3.from_id and edge3.to_id = edge1.from_id and edge1.to_id = node2.id  and edge2.to_id = node3.id and edge3.to_id = node1.id and node1.id>node2.id and node2.id>node3.id group by edge1.date;

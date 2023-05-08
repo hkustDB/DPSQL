@@ -1,0 +1,37 @@
+Query type: multiSJA
+original Query:
+SELECT sum((l_extendedprice * (1 - l_discount)) / 1000) AS revenue
+FROM ids AS id1, ids AS id2, supplier, lineitem, orders, customer, nation, region
+WHERE supplier.s_suppkey = lineitem.l_suppkey
+  AND lineitem.l_orderkey = orders.o_orderkey
+  AND orders.o_custkey = customer.c_custkey
+  AND customer.c_nationkey = nation.n_nationkey
+  AND nation.n_nationkey = supplier.s_nationkey
+  AND region.r_regionkey = nation.n_regionkey
+  AND id1.i_id = supplier.s_id
+  AND id2.i_id = customer.c_id
+GROUP BY n_name
+rewritten Query:
+SELECT concat(nation.n_name)
+     , (lineitem.l_extendedprice * (1 - lineitem.l_discount)) / 1000
+     , concat('id0', id1.i_id) AS id0
+     , concat('id1', id2.i_id) AS id1
+FROM ids AS id1, ids AS id2, supplier, lineitem, orders, customer, nation, region, partsupp AS partsupp0, supplier AS supplier1, part AS part0, nation AS nation1, region AS region1
+WHERE supplier.s_suppkey = lineitem.l_suppkey
+  AND lineitem.l_orderkey = orders.o_orderkey
+  AND orders.o_custkey = customer.c_custkey
+  AND customer.c_nationkey = nation.n_nationkey
+  AND nation.n_nationkey = supplier.s_nationkey
+  AND region.r_regionkey = nation.n_regionkey
+  AND id1.i_id = supplier.s_id
+  AND id2.i_id = customer.c_id
+  AND lineitem.l_partkey = partsupp0.ps_partkey
+  AND lineitem.l_suppkey = partsupp0.ps_suppkey
+  AND partsupp0.ps_suppkey = supplier1.s_suppkey
+  AND partsupp0.ps_partkey = part0.p_partkey
+  AND supplier1.s_nationkey = nation1.n_nationkey
+  AND nation1.n_regionkey = region1.r_regionkey
+true result:[(32725.068896200006, 'MOROCCO                  '), (35544.69452739998, 'EGYPT                    '), (32340.731770099985, 'CANADA                   '), (44678.59393580006, 'CHINA                    '), (31904.733955500036, 'PERU                     '), (28454.682161399993, 'UNITED KINGDOM           '), (30290.494739700047, 'ARGENTINA                '), (35771.030794699975, 'IRAN                     '), (36264.55763219996, 'BRAZIL                   '), (36508.03103089997, 'RUSSIA                   '), (35727.093631300006, 'JAPAN                    '), (36272.86751840003, 'INDIA                    '), (28366.643029899973, 'ALGERIA                  '), (27350.34582780002, 'ROMANIA                  '), (26667.158853099998, 'FRANCE                   '), (36349.29533310001, 'IRAQ                     '), (22096.426002999975, 'JORDAN                   '), (42265.166775000034, 'GERMANY                  '), (39286.50382029998, 'INDONESIA                '), (26366.3561375, 'MOZAMBIQUE               '), (26955.523785700014, 'KENYA                    '), (31834.053855000027, 'VIETNAM                  '), (29447.094820700007, 'ETHIOPIA                 '), (35827.83243600002, 'SAUDI ARABIA             '), (26840.6543967, 'UNITED STATES            ')]error:9110738.189690629
+noise result:[(1345036.6950298746, 'MOROCCO                  '), (-2562759.4865669813, 'EGYPT                    '), (-563166.8870806367, 'CANADA                   '), (-1740293.010387704, 'CHINA                    '), (-2332030.1939223115, 'PERU                     '), (-546631.5024399037, 'UNITED KINGDOM           '), (3327090.2384787826, 'ARGENTINA                '), (583359.0646858803, 'IRAN                     '), (-1284979.9883001447, 'BRAZIL                   '), (2235532.8313010666, 'RUSSIA                   '), (704755.5726242956, 'JAPAN                    '), (1663135.1905789035, 'INDIA                    '), (-595133.4545546902, 'ALGERIA                  '), (-3347343.29948681, 'ROMANIA                  '), (1913955.475321825, 'FRANCE                   '), (-2493795.117775835, 'IRAQ                     '), (269694.4959960218, 'JORDAN                   '), (573581.5688110135, 'GERMANY                  '), (-469376.37408478884, 'INDONESIA                '), (606417.545686814, 'MOZAMBIQUE               '), (-41959.80721231157, 'KENYA                    '), (2954976.207312701, 'VIETNAM                  '), (-1225451.3312160498, 'ETHIOPIA                 '), (-1372061.7818423952, 'SAUDI ARABIA             '), (-3045957.8475651783, 'UNITED STATES            ')]
+rewrite time:0.2395620346069336
+process time:1.389526128768921

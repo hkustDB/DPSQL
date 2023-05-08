@@ -1,0 +1,27 @@
+Query type: MultiMax
+original Query:
+SELECT max(l_quantity, 10000)
+FROM customer, orders, lineitem, nation
+WHERE c_custkey = o_custkey
+  AND o_orderkey = l_orderkey
+  AND c_nationkey = n_nationkey
+GROUP BY n_name
+rewritten Query:
+SELECT concat(nation.n_name)
+     , lineitem.l_quantity
+     , concat('id0', customer.c_custkey) AS id0
+FROM customer, orders, lineitem, nation, partsupp AS partsupp0, region AS region0, supplier AS supplier0, part AS part0, nation AS nation1, region AS region1
+WHERE customer.c_custkey = orders.o_custkey
+  AND orders.o_orderkey = lineitem.l_orderkey
+  AND customer.c_nationkey = nation.n_nationkey
+  AND lineitem.l_partkey = partsupp0.ps_partkey
+  AND lineitem.l_suppkey = partsupp0.ps_suppkey
+  AND nation.n_regionkey = region0.r_regionkey
+  AND partsupp0.ps_suppkey = supplier0.s_suppkey
+  AND partsupp0.ps_partkey = part0.p_partkey
+  AND supplier0.s_nationkey = nation1.n_nationkey
+  AND nation1.n_regionkey = region1.r_regionkey
+true result:[(29.0, 'INDIA                    '), (30.0, 'BRAZIL                   '), (30.0, 'IRAQ                     '), (30.0, 'ARGENTINA                '), (29.0, 'VIETNAM                  '), (31.0, 'INDONESIA                '), (32.0, 'IRAN                     '), (30.0, 'GERMANY                  '), (29.0, 'ALGERIA                  '), (29.0, 'UNITED KINGDOM           '), (29.0, 'JAPAN                    '), (30.0, 'ROMANIA                  '), (30.0, 'CHINA                    '), (30.0, 'CANADA                   '), (31.0, 'MOROCCO                  '), (29.0, 'FRANCE                   '), (30.0, 'JORDAN                   '), (28.0, 'SAUDI ARABIA             '), (28.0, 'KENYA                    '), (31.0, 'ETHIOPIA                 '), (30.0, 'EGYPT                    '), (30.0, 'RUSSIA                   '), (29.0, 'UNITED STATES            '), (28.0, 'PERU                     '), (30.0, 'MOZAMBIQUE               ')]error:742.0
+noise result:[(0.0, 'INDIA                    '), (0.0, 'BRAZIL                   '), (0.0, 'IRAQ                     '), (0.0, 'ARGENTINA                '), (0.0, 'VIETNAM                  '), (0.0, 'INDONESIA                '), (0.0, 'IRAN                     '), (0.0, 'GERMANY                  '), (0.0, 'ALGERIA                  '), (0.0, 'UNITED KINGDOM           '), (0.0, 'JAPAN                    '), (0.0, 'ROMANIA                  '), (0.0, 'CHINA                    '), (0.0, 'CANADA                   '), (0.0, 'MOROCCO                  '), (0.0, 'FRANCE                   '), (0.0, 'JORDAN                   '), (0.0, 'SAUDI ARABIA             '), (0.0, 'KENYA                    '), (0.0, 'ETHIOPIA                 '), (0.0, 'EGYPT                    '), (0.0, 'RUSSIA                   '), (0.0, 'UNITED STATES            '), (0.0, 'PERU                     '), (0.0, 'MOZAMBIQUE               ')]
+rewrite time:1.2688510417938232
+process time:7.537487983703613

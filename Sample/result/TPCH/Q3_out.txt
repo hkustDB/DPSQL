@@ -1,0 +1,28 @@
+Query type: FastSJA
+original Query:
+SELECT count(*)
+FROM customer, orders, lineitem
+WHERE orders.o_custkey = customer.c_custkey
+  AND lineitem.l_orderkey = orders.o_orderkey
+  AND o_orderdate < CAST('1997-01-01' AS date)
+  AND l_shipdate > CAST('1994-01-01' AS date)
+rewritten Query:
+SELECT 1
+     , concat('id0', customer.c_custkey) AS id0
+FROM customer, orders, lineitem, nation AS nation0, partsupp AS partsupp0, region AS region0, supplier AS supplier0, part AS part0, nation AS nation1, region AS region1
+WHERE orders.o_custkey = customer.c_custkey
+  AND lineitem.l_orderkey = orders.o_orderkey
+  AND orders.o_orderdate < CAST('1997-01-01' AS date)
+  AND lineitem.l_shipdate > CAST('1994-01-01' AS date)
+  AND customer.c_nationkey = nation0.n_nationkey
+  AND lineitem.l_partkey = partsupp0.ps_partkey
+  AND lineitem.l_suppkey = partsupp0.ps_suppkey
+  AND nation0.n_regionkey = region0.r_regionkey
+  AND partsupp0.ps_suppkey = supplier0.s_suppkey
+  AND partsupp0.ps_partkey = part0.p_partkey
+  AND supplier0.s_nationkey = nation1.n_nationkey
+  AND nation1.n_regionkey = region1.r_regionkey
+true result:289636.0
+noise result:283782.6606427439
+rewrite time:0.4541361331939697
+process time:0.9542148113250732

@@ -1,0 +1,31 @@
+Query type: FastSJA
+original Query:
+SELECT sum((l_extendedprice * (1 - l_discount)) / 1000)
+FROM nation AS n1, nation AS n2, customer, orders, lineitem, supplier
+WHERE n1.n_nationkey = customer.c_nationkey
+  AND n2.n_nationkey = supplier.s_nationkey
+  AND customer.c_custkey = orders.o_custkey
+  AND orders.o_orderkey = lineitem.l_orderkey
+  AND lineitem.l_suppkey = supplier.s_suppkey
+rewritten Query:
+SELECT (lineitem.l_extendedprice * (1 - lineitem.l_discount)) / 1000
+     , concat('id0', customer.c_custkey) AS id0
+     , concat('id1', supplier.s_suppkey) AS id1
+FROM nation AS n1, nation AS n2, customer, orders, lineitem, supplier, partsupp AS partsupp0, region AS region0, region AS region1, supplier AS supplier1, part AS part0, nation AS nation2, region AS region2
+WHERE n1.n_nationkey = customer.c_nationkey
+  AND n2.n_nationkey = supplier.s_nationkey
+  AND customer.c_custkey = orders.o_custkey
+  AND orders.o_orderkey = lineitem.l_orderkey
+  AND lineitem.l_suppkey = supplier.s_suppkey
+  AND lineitem.l_partkey = partsupp0.ps_partkey
+  AND lineitem.l_suppkey = partsupp0.ps_suppkey
+  AND n1.n_regionkey = region0.r_regionkey
+  AND n2.n_regionkey = region1.r_regionkey
+  AND partsupp0.ps_suppkey = supplier1.s_suppkey
+  AND partsupp0.ps_partkey = part0.p_partkey
+  AND supplier1.s_nationkey = nation2.n_nationkey
+  AND nation2.n_regionkey = region2.r_regionkey
+true result:20535072.231415134
+noise result:19588659.111236736
+rewrite time:1.0579569339752197
+process time:5.042876720428467

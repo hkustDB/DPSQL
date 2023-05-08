@@ -1,0 +1,1 @@
+select l_shipdate, sum(l_extendedprice*(1-l_discount)/1000) as revenue from partsupp, lineitem, orders, ids as id1, ids as id2 where ps_suppkey = l_suppkey and ps_partkey = l_partkey and o_orderkey = l_orderkey and id1.i_id = partsupp.ps_id and id2.i_id = orders.o_id and l_shipdate between date '1995-01-01' and date '1995-4-10' group by l_shipdate;

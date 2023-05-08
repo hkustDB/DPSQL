@@ -1,0 +1,3 @@
+select max(l_quantity, 1000)
+from customer, orders, lineitem
+where c_custkey = o_custkey and o_orderkey = l_orderkey;

@@ -1,0 +1,18 @@
+Query type: FastSJA
+original Query:
+SELECT sum((ps_supplycost * ps_availqty) / 1000000)
+FROM nation, supplier, partsupp
+WHERE ps_suppkey = s_suppkey
+  AND s_nationkey = n_nationkey
+rewritten Query:
+SELECT (partsupp.ps_supplycost * partsupp.ps_availqty) / 1000000
+     , concat('id0', supplier.s_suppkey) AS id0
+FROM nation, supplier, partsupp, region AS region0, part AS part0
+WHERE partsupp.ps_suppkey = supplier.s_suppkey
+  AND supplier.s_nationkey = nation.n_nationkey
+  AND nation.n_regionkey = region0.r_regionkey
+  AND partsupp.ps_partkey = part0.p_partkey
+true result:200035.67481546933
+noise result:162723.15822151402
+rewrite time:0.10335183143615723
+process time:0.32818031311035156

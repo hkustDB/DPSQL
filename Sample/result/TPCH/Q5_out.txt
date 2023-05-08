@@ -1,0 +1,31 @@
+Query type: FastSJA
+original Query:
+SELECT count(*)
+FROM supplier, lineitem, orders, customer, nation, region
+WHERE supplier.s_suppkey = lineitem.l_suppkey
+  AND lineitem.l_orderkey = orders.o_orderkey
+  AND orders.o_custkey = customer.c_custkey
+  AND customer.c_nationkey = nation.n_nationkey
+  AND nation.n_nationkey = supplier.s_nationkey
+  AND region.r_regionkey = nation.n_regionkey
+rewritten Query:
+SELECT 1
+     , concat('id0', customer.c_custkey) AS id0
+     , concat('id1', supplier.s_suppkey) AS id1
+FROM supplier, lineitem, orders, customer, nation, region, partsupp AS partsupp0, supplier AS supplier1, part AS part0, nation AS nation1, region AS region1
+WHERE supplier.s_suppkey = lineitem.l_suppkey
+  AND lineitem.l_orderkey = orders.o_orderkey
+  AND orders.o_custkey = customer.c_custkey
+  AND customer.c_nationkey = nation.n_nationkey
+  AND nation.n_nationkey = supplier.s_nationkey
+  AND region.r_regionkey = nation.n_regionkey
+  AND lineitem.l_partkey = partsupp0.ps_partkey
+  AND lineitem.l_suppkey = partsupp0.ps_suppkey
+  AND partsupp0.ps_suppkey = supplier1.s_suppkey
+  AND partsupp0.ps_partkey = part0.p_partkey
+  AND supplier1.s_nationkey = nation1.n_nationkey
+  AND nation1.n_regionkey = region1.r_regionkey
+true result:23903.0
+noise result:22548.40968363281
+rewrite time:0.15259575843811035
+process time:0.19124102592468262

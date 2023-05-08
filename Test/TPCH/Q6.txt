@@ -1,0 +1,1 @@
+select n_name, count(*) from partsupp, lineitem, orders, customer, nation, ids as id1, ids as id2 where ps_suppkey = l_suppkey and ps_partkey = l_partkey and o_orderkey = l_orderkey and c_custkey = o_custkey and id1.i_id = partsupp.ps_id and id2.i_id = customer.c_id and c_nationkey = n_nationkey and l_shipdate between date '1995-01-01' and date '1995-2-28' group by n_name;

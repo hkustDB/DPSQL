@@ -1,0 +1,40 @@
+Query type: MaxSJA2
+original Query:
+SELECT max((l_extendedprice * (1 - l_discount)) / 1000
+         , 1000)
+FROM ids AS id1, ids AS id2, nation AS n1, nation AS n2, customer, supplier, orders, lineitem
+WHERE id1.i_id = c_id
+  AND id2.i_id = s_id
+  AND n1.n_nationkey = c_nationkey
+  AND n2.n_nationkey = s_nationkey
+  AND c_custkey = o_custkey
+  AND s_suppkey = l_suppkey
+  AND o_orderkey = l_orderkey
+  AND l_shipdate >= CAST('1995-01-01' AS date)
+  AND l_shipdate <= CAST('1996-12-31' AS date)
+rewritten Query:
+SELECT (lineitem.l_extendedprice * (1 - lineitem.l_discount)) / 1000
+     , concat('id0', id1.i_id) AS id0
+     , concat('id1', id2.i_id) AS id1
+FROM ids AS id1, ids AS id2, nation AS n1, nation AS n2, customer, supplier, orders, lineitem, partsupp AS partsupp0, region AS region0, region AS region1, supplier AS supplier1, part AS part0, nation AS nation2, region AS region2
+WHERE id1.i_id = customer.c_id
+  AND id2.i_id = supplier.s_id
+  AND n1.n_nationkey = customer.c_nationkey
+  AND n2.n_nationkey = supplier.s_nationkey
+  AND customer.c_custkey = orders.o_custkey
+  AND supplier.s_suppkey = lineitem.l_suppkey
+  AND orders.o_orderkey = lineitem.l_orderkey
+  AND lineitem.l_shipdate >= CAST('1995-01-01' AS date)
+  AND lineitem.l_shipdate <= CAST('1996-12-31' AS date)
+  AND lineitem.l_partkey = partsupp0.ps_partkey
+  AND lineitem.l_suppkey = partsupp0.ps_suppkey
+  AND n1.n_regionkey = region0.r_regionkey
+  AND n2.n_regionkey = region1.r_regionkey
+  AND partsupp0.ps_suppkey = supplier1.s_suppkey
+  AND partsupp0.ps_partkey = part0.p_partkey
+  AND supplier1.s_nationkey = nation2.n_nationkey
+  AND nation2.n_regionkey = region2.r_regionkey
+true result:85.4213374error:0.3213373999999902
+noise result:85.10000000000001
+rewrite time:0.47383904457092285
+process time:8.848857879638672

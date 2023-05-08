@@ -1,0 +1,39 @@
+Query type: multiSJA
+original Query:
+SELECT n_name
+     , count(*)
+FROM partsupp, lineitem, orders, customer, nation, ids AS id1, ids AS id2
+WHERE ps_suppkey = l_suppkey
+  AND ps_partkey = l_partkey
+  AND o_orderkey = l_orderkey
+  AND c_custkey = o_custkey
+  AND id1.i_id = partsupp.ps_id
+  AND id2.i_id = customer.c_id
+  AND c_nationkey = n_nationkey
+  AND l_shipdate BETWEEN CAST('1995-01-01' AS date)
+                     AND CAST('1995-2-28' AS date)
+GROUP BY n_name
+rewritten Query:
+SELECT concat(nation.n_name)
+     , 1
+     , concat('id0', id1.i_id) AS id0
+     , concat('id1', id2.i_id) AS id1
+FROM partsupp, lineitem, orders, customer, nation, ids AS id1, ids AS id2, region AS region0, supplier AS supplier0, part AS part0, nation AS nation1, region AS region1
+WHERE partsupp.ps_suppkey = lineitem.l_suppkey
+  AND partsupp.ps_partkey = lineitem.l_partkey
+  AND orders.o_orderkey = lineitem.l_orderkey
+  AND customer.c_custkey = orders.o_custkey
+  AND id1.i_id = partsupp.ps_id
+  AND id2.i_id = customer.c_id
+  AND customer.c_nationkey = nation.n_nationkey
+  AND lineitem.l_shipdate BETWEEN CAST('1995-01-01' AS date)
+                              AND CAST('1995-2-28' AS date)
+  AND nation.n_regionkey = region0.r_regionkey
+  AND partsupp.ps_suppkey = supplier0.s_suppkey
+  AND partsupp.ps_partkey = part0.p_partkey
+  AND supplier0.s_nationkey = nation1.n_nationkey
+  AND nation1.n_regionkey = region1.r_regionkey
+true result:[(631.0, 'VIETNAM                  '), (630.0, 'FRANCE                   '), (501.0, 'IRAQ                     '), (600.0, 'CANADA                   '), (600.0, 'JAPAN                    '), (645.0, 'ARGENTINA                '), (647.0, 'IRAN                     '), (593.0, 'ETHIOPIA                 '), (653.0, 'CHINA                    '), (581.0, 'RUSSIA                   '), (546.0, 'UNITED KINGDOM           '), (624.0, 'INDIA                    '), (519.0, 'BRAZIL                   '), (531.0, 'ROMANIA                  '), (622.0, 'SAUDI ARABIA             '), (666.0, 'UNITED STATES            '), (570.0, 'INDONESIA                '), (547.0, 'KENYA                    '), (587.0, 'EGYPT                    '), (571.0, 'PERU                     '), (535.0, 'MOROCCO                  '), (579.0, 'ALGERIA                  '), (551.0, 'MOZAMBIQUE               '), (609.0, 'GERMANY                  '), (581.0, 'JORDAN                   ')]error:47200.89812518051
+noise result:[(10548.024453952727, 'VIETNAM                  '), (7604.818569747965, 'FRANCE                   '), (1534.9084621409227, 'IRAQ                     '), (-7984.182020380463, 'CANADA                   '), (2502.7585986457675, 'JAPAN                    '), (2964.5833426363706, 'ARGENTINA                '), (-122.95687048636137, 'IRAN                     '), (-951.5333924369968, 'ETHIOPIA                 '), (6194.79123787682, 'CHINA                    '), (11507.869333667826, 'RUSSIA                   '), (16806.475215096507, 'UNITED KINGDOM           '), (-7318.45799029246, 'INDIA                    '), (1684.9498650429082, 'BRAZIL                   '), (-20166.202060090105, 'ROMANIA                  '), (21054.115049695898, 'SAUDI ARABIA             '), (-1213.610283012386, 'UNITED STATES            '), (-6667.571648779061, 'INDONESIA                '), (919.8996339533328, 'KENYA                    '), (8858.106600857343, 'EGYPT                    '), (-4548.295571132735, 'PERU                     '), (-2069.9755532784225, 'MOROCCO                  '), (16404.322517445977, 'ALGERIA                  '), (957.1689302941561, 'MOZAMBIQUE               '), (-15532.481992169582, 'GERMANY                  '), (-303.4609654691001, 'JORDAN                   ')]
+rewrite time:0.11908674240112305
+process time:1.7937452793121338

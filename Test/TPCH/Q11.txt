@@ -1,0 +1,1 @@
+select sum(ps_supplycost * ps_availqty/1000000) from supplier, partsupp where ps_suppkey = s_suppkey;

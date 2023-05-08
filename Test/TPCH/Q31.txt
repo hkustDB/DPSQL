@@ -1,0 +1,4 @@
+select max(l_quantity, 10000)
+from customer, orders, lineitem, nation
+where c_custkey = o_custkey and o_orderkey = l_orderkey and c_nationkey = n_nationkey
+group by n_name;
