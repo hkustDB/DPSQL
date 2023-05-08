@@ -1,3 +1,1 @@
-select count (*)
-from node as r1, node as r2, node as r3, edge as r4, edge as r5
-where r4.to_id = r5.from_id and r1.id = r4.from_id and r2.id = r5.from_id and r3.id = r5.to_id and r1.id < r3.id;
+select count(*) from supplier, lineitem, orders, customer, nation where supplier.S_SUPPKEY=lineitem.L_SUPPKEY and lineitem.L_ORDERKEY=orders.O_ORDERKEY and orders.O_CUSTKEY=customer.C_CUSTKEY and customer.C_NATIONKEY=nation.N_NATIONKEY and nation.N_NATIONKEY=supplier.S_NATIONKEY;
