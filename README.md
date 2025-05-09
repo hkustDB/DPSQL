@@ -51,6 +51,7 @@ Before running this project, please install below tools
 * [Mosek](https://www.mosek.com/downloads/) and the licence is under `./Profile`.
 
 Please do not install `Cplex` dependency, which can only handle a small dataset, but download the `Cplex API` and import that to python with this [instruction](https://www.ibm.com/docs/zh/icos/12.9.0?topic=cplex-setting-up-python-api).
+(We are aware that this link is expired and are working on a substitute solution.)
 
 ### Python Dependency
 Here are dependencies used in python programs:
@@ -62,7 +63,7 @@ Here are dependencies used in python programs:
 * `configparser`
 * `math`
 * `psycopg2`
-* `pglast`
+* `pglast`v4.4
 * `argparser`
 
 ### Database permission
