@@ -52,8 +52,8 @@ class FastSJA(algorithm):
         ImplicitJoin()(selectstmt)
         add_table_name(selectstmt, self.schema)(selectstmt)
         aggregationVisit()(selectstmt)
-        userAdder(private_pk)(selectstmt)
         complete_query(self.fks)(selectstmt)
+        userAdder(private_pk)(selectstmt)
         self.rewrite_query = (stream.RawStream()(selectstmt))
 
     def process(self):
@@ -87,8 +87,8 @@ class MultiSJF(algorithm):
         add_table_name(selectstmt, self.schema)(selectstmt)
         group_by()(selectstmt)
         aggregationVisit()(selectstmt)
-        userAdder(private_pk)(selectstmt)
         complete_query(self.fks)(selectstmt)
+        userAdder(private_pk)(selectstmt)
         self.rewrite_query = (stream.RawStream()(selectstmt))
 
     def process(self):
@@ -124,8 +124,8 @@ class MaxSJA1(algorithm):
         add_table_name(selectstmt, self.schema)(selectstmt)
         agg = aggregationVisit()
         agg(selectstmt)
-        userAdder(private_pk)(selectstmt)
         complete_query(self.fks)(selectstmt)
+        userAdder(private_pk)(selectstmt)
         self.k = agg.index
         self.rewrite_query = (stream.RawStream()(selectstmt))
 
@@ -177,8 +177,8 @@ class MultiMax(algorithm):
         group_by()(selectstmt)
         agg = aggregationVisit()
         agg(selectstmt)
-        userAdder(private_pk)(selectstmt)
         complete_query(self.fks)(selectstmt)
+        userAdder(private_pk)(selectstmt)
         self.k = agg.index
         self.rewrite_query = (stream.RawStream()(selectstmt))
 

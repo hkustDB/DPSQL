@@ -358,7 +358,7 @@ class complete_query(visitors.Visitor):
                     # add the join condition to the select statement
                     if node.whereClause is None:
                         if len(conditions) == 1:
-                            node.whereClause = conditions
+                            node.whereClause = conditions[0]
                         elif len(conditions) > 1:
                             node.whereClause = ast.BoolExpr(boolop=enums.BoolExprType.AND_EXPR, args=())
                             for condition in conditions:
